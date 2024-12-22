@@ -1,0 +1,20 @@
+.loginTitleBox {
+    /*-fx-background-color: derive(black, 60%);*/
+}
+.loginboxinput {
+    -fx-background-color: derive(black, 80%);
+}
+.loginBtn {
+    -fx-background-color: derive(black, 65%);
+    -fx-border-radius: 4em;
+}
+.overlay-a {
+    -fx-background-image: url("test_bg.jpg");
+    -fx-background-repeat: no-repeat;
+    -fx-background-position: center;
+    -fx-background-size: cover;
+}
+.overlay-b {
+    -fx-background-color: derive(black, 25%);
+    -fx-opacity: 70%;
+}

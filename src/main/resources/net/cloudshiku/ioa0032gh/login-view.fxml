@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.effect.BoxBlur?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="780.0" stylesheets="@login-style.css" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <left>
+      <AnchorPane prefHeight="500.0" prefWidth="398.0" styleClass="loginTitleBox" BorderPane.alignment="CENTER">
+         <children>
+            <Pane layoutX="-3.0" layoutY="-1.0" prefHeight="506.0" prefWidth="399.0" styleClass="overlay-a">
+               <effect>
+                  <BoxBlur iterations="3" />
+               </effect>
+            </Pane>
+            <Pane layoutX="-4.0" layoutY="1.0" prefHeight="506.0" prefWidth="402.0" styleClass="overlay-b">
+               <effect>
+                  <BoxBlur iterations="3" />
+               </effect>
+            </Pane>
+            <Text fill="WHITE" layoutX="111.0" layoutY="260.0" strokeType="OUTSIDE" strokeWidth="0.0" text="CASH SYSTEM">
+               <font>
+                  <Font name="XDPrime-Bold" size="29.0" />
+               </font>
+            </Text>
+            <Text fill="WHITE" layoutX="175.0" layoutY="488.0" strokeType="OUTSIDE" strokeWidth="0.0" text="V1.0 (Alpha)">
+               <font>
+                  <Font name="XDPrime-Light" size="9.0" />
+               </font>
+            </Text>
+            <FontAwesomeIcon fill="WHITE" glyphName="BOOK" layoutX="171.0" layoutY="214.0" size="60" />
+         </children></AnchorPane>
+   </left>
+   <right>
+      <AnchorPane prefHeight="500.0" prefWidth="418.0" styleClass="loginboxinput" BorderPane.alignment="CENTER">
+         <children>
+            <TextField layoutX="77.0" layoutY="225.0" prefHeight="26.0" prefWidth="236.0" promptText="Username" />
+            <TextField layoutX="76.0" layoutY="280.0" prefHeight="26.0" prefWidth="239.0" promptText="Password" />
+            <FontAwesomeIcon fill="WHITE" glyphName="USER" layoutX="50.0" layoutY="245.0" size="20" wrappingWidth="13.116656303405762" />
+            <FontAwesomeIcon fill="WHITE" glyphName="KEY" layoutX="50.0" layoutY="300.0" size="20" wrappingWidth="13.116656303405762" />
+            <Button layoutX="151.0" layoutY="340.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="79.0" styleClass="loginBtn" text="Login" textFill="WHITE" />
+            <Text fill="WHITE" layoutX="17.0" layoutY="176.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Silahkan login untuk mengakses sistem">
+               <font>
+                  <Font name="XDPrime-Bold" size="20.0" />
+               </font>
+            </Text>
+         </children></AnchorPane>
+   </right>
+</BorderPane>
