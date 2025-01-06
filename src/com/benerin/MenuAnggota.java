@@ -1,11 +1,10 @@
-package com.papangcebeh;
+package com.benerin;
 
-import com.papangcebeh.DatabaseConnection.DatabaseConnection;
+import com.benerin.DatabaseConnection.DatabaseConnection;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
-import java.awt.event.ActionEvent;
 import java.sql.*;
 
 public class MenuAnggota extends JFrame {

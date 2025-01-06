@@ -1,6 +1,6 @@
-package com.papangcebeh;
+package com.benerin;
 
-import com.papangcebeh.DatabaseConnection.DatabaseConnection;
+import com.benerin.DatabaseConnection.DatabaseConnection;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;

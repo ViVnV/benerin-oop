@@ -1,4 +1,4 @@
-import com.papangcebeh.LoginForm;
+import com.benerin.LoginForm;
 
 import javax.swing.*;
 

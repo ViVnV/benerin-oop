@@ -1,4 +1,4 @@
-package com.papangcebeh.DatabaseConnection;
+package com.benerin.DatabaseConnection;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
