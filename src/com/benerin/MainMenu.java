@@ -64,7 +64,7 @@ public class MainMenu extends JFrame {
         JButton anggotaButton = new JButton("Menu Anggota");
         anggotaButton.addActionListener(e -> {
             dispose();
-            new MenuAnggota();
+            new MenuAnggota(this.username, this.userRole);
         });
         panel.add(anggotaButton);
 
@@ -86,7 +86,7 @@ public class MainMenu extends JFrame {
         JButton registerUserButton = new JButton("Register Bendahara");
         registerUserButton.addActionListener(e -> {
             dispose();
-            new RegisterForm();
+            new MenuBendahara(this.username, this.userRole);
         });
         panel.add(registerUserButton);
     }
@@ -95,7 +95,7 @@ public class MainMenu extends JFrame {
         JButton anggotaButton = new JButton("Menu Anggota");
         anggotaButton.addActionListener(e -> {
             dispose();
-            new MenuAnggota();
+            new MenuAnggota(this.username, this.userRole);
         });
         panel.add(anggotaButton);
 

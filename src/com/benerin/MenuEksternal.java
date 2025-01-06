@@ -1,6 +1,9 @@
 package com.benerin;
 
 import com.benerin.DatabaseConnection.DatabaseConnection;
+import com.benerin.interfaces.BasicForm;
+import com.benerin.models.Eksternal;
+import com.benerin.services.EksternalService;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -10,13 +13,22 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
-public class MenuEksternal extends JFrame {
+public class MenuEksternal extends JFrame implements BasicForm {
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField namaField;
     private JTextField jenisField;
+    private EksternalService eksternalService;
+
+    private String username;
+    private String role;
 
     public MenuEksternal(String username, String role) {
+        this.username = username;
+        this.role = role;
+
+        eksternalService = new EksternalService();
+
         setTitle("Menu Eksternal - Aplikasi Pencatatan Keuangan");
         setSize(600, 400);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -59,13 +71,10 @@ public class MenuEksternal extends JFrame {
         loadData();
 
         // Action listeners
-        addButton.addActionListener(e -> addEksternal());
-        updateButton.addActionListener(e -> updateEksternal());
-        deleteButton.addActionListener(e -> deleteEksternal());
-        backButton.addActionListener(e -> {
-            dispose();
-            new MainMenu(username, role);
-        });
+        addButton.addActionListener(e -> add());
+        updateButton.addActionListener(e -> update());
+        deleteButton.addActionListener(e -> delete());
+        backButton.addActionListener(e -> back());
 
         setVisible(true);
     }
@@ -91,7 +100,8 @@ public class MenuEksternal extends JFrame {
     }
 
     // Method untuk menambahkan eksternal baru
-    private void addEksternal() {
+    @Override
+    public void add() {
         String nama = namaField.getText();
         String jenis = jenisField.getText();
 
@@ -100,13 +110,8 @@ public class MenuEksternal extends JFrame {
             return;
         }
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO eksternal (nama, jenis) VALUES (?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, nama);
-            statement.setString(2, jenis);
-            statement.executeUpdate();
-
+        try {
+            eksternalService.add(new Eksternal(nama, jenis));
             JOptionPane.showMessageDialog(this, "Eksternal berhasil ditambahkan!");
             loadData();
             namaField.setText("");
@@ -118,7 +123,8 @@ public class MenuEksternal extends JFrame {
     }
 
     // Method untuk mengedit data eksternal
-    private void updateEksternal() {
+    @Override
+    public void update() {
         int selectedRow = table.getSelectedRow();
 
         // Jika tidak ada baris yang dipilih
@@ -136,16 +142,11 @@ public class MenuEksternal extends JFrame {
             return;
         }
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "UPDATE eksternal SET nama = ?, jenis = ? WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, nama);
-            statement.setString(2, jenis);
-            statement.setInt(3, id);
-            statement.executeUpdate();
-
+        try {
+            eksternalService.update(new Eksternal(id, nama, jenis));
             JOptionPane.showMessageDialog(this, "Eksternal berhasil diperbarui!");
             loadData();
+
             namaField.setText("");
             jenisField.setText("");
         } catch (Exception e) {
@@ -155,7 +156,8 @@ public class MenuEksternal extends JFrame {
     }
 
     // Method untuk menghapus eksternal
-    private void deleteEksternal() {
+    @Override
+    public void delete() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Pilih eksternal yang ingin dihapus!");
@@ -169,17 +171,19 @@ public class MenuEksternal extends JFrame {
             return;
         }
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "DELETE FROM eksternal WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setInt(1, id);
-            statement.executeUpdate();
-
+        try {
+            eksternalService.delete(id);
             JOptionPane.showMessageDialog(this, "Eksternal berhasil dihapus!");
             loadData();
         } catch (Exception e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(this, "Error deleting eksternal!");
         }
+    }
+
+    @Override
+    public void back() {
+        dispose();
+        new MainMenu(this.username, this.role);
     }
 }
