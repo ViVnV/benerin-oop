@@ -5,4 +5,5 @@ public interface BasicForm {
     void update();
     void delete();
     void back();
+    void loadData();
 }

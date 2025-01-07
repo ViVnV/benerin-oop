@@ -3,14 +3,16 @@ package com.benerin.models;
 public class Keuangan {
     private int id;
     private String sumber_dana;
-    private int jumlah;
+    private String keterangan;
+    private double jumlah;
     private String jenis_transaksi;
     private String tanggal;
     private int anggota_id;
     private int eksternal_id;
 
-    public Keuangan(String sumber_dana, int jumlah, String jenis_transaksi, String tanggal, int anggota_id, int eksternal_id) {
+    public Keuangan(String sumber_dana, String keterangan, double jumlah, String jenis_transaksi, String tanggal, int anggota_id, int eksternal_id) {
         this.sumber_dana = sumber_dana;
+        this.keterangan = keterangan;
         this.jumlah = jumlah;
         this.jenis_transaksi = jenis_transaksi;
         this.tanggal = tanggal;
@@ -18,9 +20,10 @@ public class Keuangan {
         this.eksternal_id = eksternal_id;
     }
 
-    public Keuangan(int id, String sumber_dana, int jumlah, String jenis_transaksi, String tanggal, int anggota_id, int eksternal_id) {
+    public Keuangan(int id, String sumber_dana, String keterangan, double jumlah, String jenis_transaksi, String tanggal, int anggota_id, int eksternal_id) {
         this.id = id;
         this.sumber_dana = sumber_dana;
+        this.keterangan = keterangan;
         this.jumlah = jumlah;
         this.jenis_transaksi = jenis_transaksi;
         this.tanggal = tanggal;
@@ -44,11 +47,19 @@ public class Keuangan {
         this.sumber_dana = sumber_dana;
     }
 
-    public int getJumlah() {
+    public String getKeterangan() {
+        return keterangan;
+    }
+
+    public void setKeterangan(String keterangan) {
+        this.keterangan = keterangan;
+    }
+
+    public double getJumlah() {
         return jumlah;
     }
 
-    public void setJumlah(int jumlah) {
+    public void setJumlah(double jumlah) {
         this.jumlah = jumlah;
     }
 

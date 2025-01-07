@@ -1,6 +1,9 @@
 package com.benerin;
 
 import com.benerin.DatabaseConnection.DatabaseConnection;
+import com.benerin.interfaces.BasicForm;
+import com.benerin.models.Keuangan;
+import com.benerin.services.KeuanganService;
 
 import javax.swing.*;
 import javax.swing.border.EmptyBorder;
@@ -8,17 +11,28 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 
-public class MenuKeuangan extends JFrame {
+public class MenuKeuangan extends JFrame implements BasicForm {
     private DefaultTableModel tableModel;
     private JTable table;
     private JComboBox<String> sumberDanaComboBox;
     private JComboBox<String> anggotaComboBox;
     private JComboBox<String> eksternalComboBox;
+    private JTextField keteranganField;
     private JTextField jumlahField;
     private JComboBox<String> jenisTransaksiComboBox;
     private JTextField tanggalField;
 
+    private String username;
+    private String role;
+
+    private KeuanganService keuanganService;
+
     public MenuKeuangan(String username, String role) {
+        this.username = username;
+        this.role = role;
+
+        keuanganService = new KeuanganService();
+
         setTitle("Menu Keuangan - CRUD Aktivitas Keuangan");
         setSize(1000, 650);
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -58,9 +72,17 @@ public class MenuKeuangan extends JFrame {
         comboPanel.add(eksternalComboBox, "eksternal");
         inputPanel.add(comboPanel, gbc);
 
-        // Jumlah
+        // Keterangan
         gbc.gridx = 0;
         gbc.gridy = 2;
+        inputPanel.add(new JLabel("Keterangan:"), gbc);
+        gbc.gridx = 1;
+        keteranganField = new JTextField();
+        inputPanel.add(keteranganField, gbc);
+
+        // Jumlah
+        gbc.gridx = 0;
+        gbc.gridy = 3;
         inputPanel.add(new JLabel("Jumlah:"), gbc);
         gbc.gridx = 1;
         jumlahField = new JTextField();
@@ -68,7 +90,7 @@ public class MenuKeuangan extends JFrame {
 
         // Jenis Transaksi
         gbc.gridx = 0;
-        gbc.gridy = 3;
+        gbc.gridy = 4;
         inputPanel.add(new JLabel("Jenis Transaksi:"), gbc);
         gbc.gridx = 1;
         jenisTransaksiComboBox = new JComboBox<>(new String[]{"pemasukan", "pengeluaran"});
@@ -76,7 +98,7 @@ public class MenuKeuangan extends JFrame {
 
         // Tanggal
         gbc.gridx = 0;
-        gbc.gridy = 4;
+        gbc.gridy = 5;
         inputPanel.add(new JLabel("Tanggal (YYYY-MM-DD):"), gbc);
         gbc.gridx = 1;
         tanggalField = new JTextField();
@@ -85,7 +107,7 @@ public class MenuKeuangan extends JFrame {
         mainPanel.add(inputPanel, BorderLayout.NORTH);
 
         // Panel tabel
-        tableModel = new DefaultTableModel(new String[]{"ID", "Sumber Dana", "Nama", "Jumlah", "Jenis", "Tanggal"}, 0);
+        tableModel = new DefaultTableModel(new String[]{"ID", "Sumber Dana", "Nama", "Keterangan", "Jumlah", "Jenis", "Tanggal"}, 0);
         table = new JTable(tableModel);
         table.setRowHeight(25);
         table.setFont(new Font("Arial", Font.PLAIN, 14));
@@ -114,13 +136,10 @@ public class MenuKeuangan extends JFrame {
         loadEksternal();
 
         // Action listeners
-        addButton.addActionListener(e -> addTransaction());
-        updateButton.addActionListener(e -> updateTransaction());
-        deleteButton.addActionListener(e -> deleteTransaction());
-        backButton.addActionListener(e -> {
-            dispose();
-            new MainMenu(username, role);
-        });
+        addButton.addActionListener(e -> add());
+        updateButton.addActionListener(e -> update());
+        deleteButton.addActionListener(e -> delete());
+        backButton.addActionListener(e -> back());
 
         setVisible(true);
     }
@@ -130,22 +149,28 @@ public class MenuKeuangan extends JFrame {
         cl.show(eksternalComboBox.getParent(), sumberDanaComboBox.getSelectedItem().toString());
     }
 
-
-    private void loadData() {
+    @Override
+    public void loadData() {
         tableModel.setRowCount(0);
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT * FROM keuangan";
+            String query = "SELECT keuangan.id, keuangan.sumber_dana, COALESCE(eksternal.nama, anggota.nama) AS nama, COALESCE(eksternal.jenis, anggota.jabatan) AS jenis, keuangan.keterangan, keuangan.jumlah, keuangan.jenis_transaksi, keuangan.tanggal " +
+                    "FROM keuangan " +
+                    "LEFT JOIN anggota ON keuangan.anggota_id = anggota.id " +
+                    "LEFT JOIN eksternal ON keuangan.eksternal_id = eksternal.id";
+
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
                 int id = resultSet.getInt("id");
                 String sumberDana = resultSet.getString("sumber_dana");
-                String nama = resultSet.getString("keterangan");
+                String nama = resultSet.getString("nama");
+                String keterangan = resultSet.getString("keterangan");
                 double jumlah = resultSet.getDouble("jumlah");
-                String jenis = resultSet.getString("jenis_transaksi");
+                String jenisTransaksi = resultSet.getString("jenis_transaksi");
                 String tanggal = resultSet.getString("tanggal");
-                tableModel.addRow(new Object[]{id, sumberDana, nama, jumlah, jenis, tanggal});
+
+                tableModel.addRow(new Object[]{id, sumberDana, nama, keterangan, jumlah, jenisTransaksi, tanggal});
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -156,12 +181,12 @@ public class MenuKeuangan extends JFrame {
     private void loadAnggota() {
         anggotaComboBox.removeAllItems();
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT nama FROM anggota";
+            String query = "SELECT id, nama FROM anggota";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                anggotaComboBox.addItem(resultSet.getString("nama"));
+                anggotaComboBox.addItem(resultSet.getInt("id") + " - " + resultSet.getString("nama"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,12 +197,12 @@ public class MenuKeuangan extends JFrame {
     private void loadEksternal() {
         eksternalComboBox.removeAllItems();
         try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "SELECT nama FROM eksternal";
+            String query = "SELECT id, nama FROM eksternal";
             Statement statement = connection.createStatement();
             ResultSet resultSet = statement.executeQuery(query);
 
             while (resultSet.next()) {
-                eksternalComboBox.addItem(resultSet.getString("nama"));
+                eksternalComboBox.addItem(resultSet.getInt("id") + " - " + resultSet.getString("nama"));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -185,22 +210,22 @@ public class MenuKeuangan extends JFrame {
         }
     }
 
-    private void addTransaction() {
+    @Override
+    public void add() {
         String sumberDana = (String) sumberDanaComboBox.getSelectedItem();
-        String nama = sumberDana.equals("anggota") ? (String) anggotaComboBox.getSelectedItem() : (String) eksternalComboBox.getSelectedItem();
+        String selectedNama = sumberDana.equals("anggota") ? (String) anggotaComboBox.getSelectedItem() : (String) eksternalComboBox.getSelectedItem();
+        int id = Integer.parseInt(selectedNama.split(" - ")[0]);
+
+        String keterangan = keteranganField.getText();
         double jumlah = Double.parseDouble(jumlahField.getText());
         String jenisTransaksi = (String) jenisTransaksiComboBox.getSelectedItem();
         String tanggal = tanggalField.getText();
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "INSERT INTO keuangan (sumber_dana, keterangan, jumlah, jenis_transaksi, tanggal) VALUES (?, ?, ?, ?, ?)";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, sumberDana);
-            statement.setString(2, nama);
-            statement.setDouble(3, jumlah);
-            statement.setString(4, jenisTransaksi);
-            statement.setString(5, tanggal);
-            statement.executeUpdate();
+        int anggotaId = sumberDana.equals("anggota") ? id : 0;
+        int eksternalId = sumberDana.equals("eksternal") ? id : 0;
+
+        try {
+            keuanganService.add(new Keuangan(sumberDana, keterangan, jumlah, jenisTransaksi, tanggal, anggotaId, eksternalId));
 
             JOptionPane.showMessageDialog(this, "Transaksi berhasil ditambahkan!");
             loadData();
@@ -211,30 +236,29 @@ public class MenuKeuangan extends JFrame {
         }
     }
 
-    private void updateTransaction() {
+    @Override
+    public void update() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Pilih transaksi yang ingin diperbarui!");
             return;
         }
 
-        int id = (int) tableModel.getValueAt(selectedRow, 0);
+        int keuanganId = (int) tableModel.getValueAt(selectedRow, 0);
         String sumberDana = (String) sumberDanaComboBox.getSelectedItem();
-        String nama = sumberDana.equals("anggota") ? (String) anggotaComboBox.getSelectedItem() : (String) eksternalComboBox.getSelectedItem();
+        String selectedNama = sumberDana.equals("anggota") ? (String) anggotaComboBox.getSelectedItem() : (String) eksternalComboBox.getSelectedItem();
+        int id = Integer.parseInt(selectedNama.split(" - ")[0]);
+
+        String keterangan = keteranganField.getText();
         double jumlah = Double.parseDouble(jumlahField.getText());
         String jenisTransaksi = (String) jenisTransaksiComboBox.getSelectedItem();
         String tanggal = tanggalField.getText();
 
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            String query = "UPDATE keuangan SET sumber_dana = ?, keterangan = ?, jumlah = ?, jenis_transaksi = ?, tanggal = ? WHERE id = ?";
-            PreparedStatement statement = connection.prepareStatement(query);
-            statement.setString(1, sumberDana);
-            statement.setString(2, nama);
-            statement.setDouble(3, jumlah);
-            statement.setString(4, jenisTransaksi);
-            statement.setString(5, tanggal);
-            statement.setInt(6, id);
-            statement.executeUpdate();
+        int anggotaId = sumberDana.equals("anggota") ? id : 0;
+        int eksternalId = sumberDana.equals("eksternal") ? id : 0;
+
+        try {
+            keuanganService.update(new Keuangan(keuanganId, sumberDana, keterangan, jumlah, jenisTransaksi, tanggal, anggotaId, eksternalId));
 
             JOptionPane.showMessageDialog(this, "Transaksi berhasil diperbarui!");
             loadData();
@@ -246,7 +270,8 @@ public class MenuKeuangan extends JFrame {
     }
 
     // Method untuk menghapus transaksi yang dipilih
-    private void deleteTransaction() {
+    @Override
+    public void delete() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Pilih transaksi yang ingin dihapus!");
@@ -274,7 +299,6 @@ public class MenuKeuangan extends JFrame {
         }
     }
 
-
     private void clearFields() {
         jumlahField.setText("");
         tanggalField.setText("");
@@ -282,5 +306,11 @@ public class MenuKeuangan extends JFrame {
         anggotaComboBox.setSelectedIndex(0);
         eksternalComboBox.setSelectedIndex(0);
         jenisTransaksiComboBox.setSelectedIndex(0);
+    }
+
+    @Override
+    public void back() {
+        dispose();
+        new MainMenu(this.username, this.role);
     }
 }

@@ -1,13 +1,14 @@
 package com.benerin;
 
 import com.benerin.DatabaseConnection.DatabaseConnection;
+import com.benerin.interfaces.BasicForm;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.sql.*;
 
-public class MenuBendahara extends JFrame {
+public class MenuBendahara extends JFrame implements BasicForm {
     private DefaultTableModel tableModel;
     private JTable table;
     private JTextField usernameField;
@@ -66,16 +67,17 @@ public class MenuBendahara extends JFrame {
         loadData();
 
         // Action listeners
-        addButton.addActionListener(e -> addUser());
-        updateButton.addActionListener(e -> updateUser());
-        deleteButton.addActionListener(e -> deleteUser());
+        addButton.addActionListener(e -> add());
+        updateButton.addActionListener(e -> update());
+        deleteButton.addActionListener(e -> delete());
         backButton.addActionListener(e -> back());
 
         setVisible(true);
     }
 
     // Method untuk memuat data user dari database
-    private void loadData() {
+    @Override
+    public void loadData() {
         tableModel.setRowCount(0);
         try (Connection connection = DatabaseConnection.getConnection()) {
             String query = "SELECT id, username, email, role FROM users WHERE role = 'bendahara'";
@@ -95,7 +97,8 @@ public class MenuBendahara extends JFrame {
     }
 
     // Method untuk menambahkan user baru
-    private void addUser() {
+    @Override
+    public void add() {
         String username = usernameField.getText();
         String password = new String(passwordField.getPassword());
         String email = emailField.getText();
@@ -124,7 +127,8 @@ public class MenuBendahara extends JFrame {
     }
 
     // Method untuk mengedit user
-    private void updateUser() {
+    @Override
+    public void update() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Pilih user yang ingin diedit!");
@@ -159,8 +163,10 @@ public class MenuBendahara extends JFrame {
         }
     }
 
+
     // Method untuk menghapus user
-    private void deleteUser() {
+    @Override
+    public void delete() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Pilih user yang ingin dihapus!");

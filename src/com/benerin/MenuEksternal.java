@@ -80,7 +80,8 @@ public class MenuEksternal extends JFrame implements BasicForm {
     }
 
     // Method untuk memuat data eksternal dari database
-    private void loadData() {
+    @Override
+    public void loadData() {
         tableModel.setRowCount(0);
         try (Connection connection = DatabaseConnection.getConnection()) {
             String query = "SELECT * FROM eksternal";

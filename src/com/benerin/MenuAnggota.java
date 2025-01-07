@@ -78,7 +78,8 @@ public class MenuAnggota extends JFrame implements BasicForm {
         setVisible(true);
     }
 
-    private void loadData() {
+    @Override
+    public void loadData() {
         tableModel.setRowCount(0);
         try (Connection connection = DatabaseConnection.getConnection()) {
             String query = "SELECT * FROM anggota";
