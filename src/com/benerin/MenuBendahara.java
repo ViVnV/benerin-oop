@@ -23,45 +23,89 @@ public class MenuBendahara extends JFrame implements BasicForm {
         this.role = role;
 
         setTitle("Menu Bendahara - CRUD Bendahara");
-        setSize(700, 400);
+        setSize(950, 600); // Adjusted window size to match other forms
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // Panel utama
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(mainPanel);
+
         // Panel input
-        JPanel inputPanel = new JPanel(new GridLayout(4, 2));
-        inputPanel.add(new JLabel("Username:"));
-        usernameField = new JTextField();
-        inputPanel.add(usernameField);
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
-        inputPanel.add(new JLabel("Password:"));
-        passwordField = new JPasswordField();
-        inputPanel.add(passwordField);
+        // Username
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(usernameLabel, gbc);
 
-        inputPanel.add(new JLabel("Email:"));
-        emailField = new JTextField();
-        inputPanel.add(emailField);
+        gbc.gridx = 1;
+        usernameField = new JTextField(20);
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 14));
+        inputPanel.add(usernameField, gbc);
+
+        // Password
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(passwordLabel, gbc);
+
+        gbc.gridx = 1;
+        passwordField = new JPasswordField(20);
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 14));
+        inputPanel.add(passwordField, gbc);
+
+        // Email
+        gbc.gridx = 0;
+        gbc.gridy = 2;
+        JLabel emailLabel = new JLabel("Email:");
+        emailLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(emailLabel, gbc);
+
+        gbc.gridx = 1;
+        emailField = new JTextField(20);
+        emailField.setFont(new Font("Arial", Font.PLAIN, 14));
+        inputPanel.add(emailField, gbc);
+
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+
+        // Tabel untuk menampilkan data user
+        tableModel = new DefaultTableModel(new String[]{"ID", "Username", "Email"}, 0);
+        table = new JTable(tableModel);
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.setRowHeight(25);
+        table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
+        JScrollPane scrollPane = new JScrollPane(table);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Panel tombol
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton addButton = new JButton("Tambah");
+        addButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        addButton.setPreferredSize(new Dimension(120, 40));
         JButton updateButton = new JButton("Edit");
+        updateButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        updateButton.setPreferredSize(new Dimension(120, 40));
         JButton deleteButton = new JButton("Hapus");
+        deleteButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        deleteButton.setPreferredSize(new Dimension(120, 40));
         JButton backButton = new JButton("Kembali");
+        backButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        backButton.setPreferredSize(new Dimension(120, 40));
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(backButton);
 
-        // Tabel untuk menampilkan data user
-        tableModel = new DefaultTableModel(new String[]{"ID", "Username", "Email"}, 0);
-        table = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        // Tambahkan panel ke frame
-        add(inputPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         // Load data user
         loadData();

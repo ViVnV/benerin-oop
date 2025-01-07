@@ -30,41 +30,76 @@ public class MenuAnggota extends JFrame implements BasicForm {
         anggotaService = new AnggotaService();
 
         setTitle("Menu Anggota - Aplikasi Pencatatan Keuangan");
-        setSize(600, 400);
+        setSize(950, 500); // Adjusted window size to match other forms
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
-        // Panel untuk form input
-        JPanel inputPanel = new JPanel(new GridLayout(2, 2));
-        inputPanel.add(new JLabel("Nama:"));
-        namaField = new JTextField();
-        inputPanel.add(namaField);
+        // Panel utama
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(mainPanel);
 
-        inputPanel.add(new JLabel("Jabatan:"));
-        jabatanField = new JTextField();
-        inputPanel.add(jabatanField);
+        // Panel untuk form input
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+
+        // Nama
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel namaLabel = new JLabel("Nama:");
+        namaLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        inputPanel.add(namaLabel, gbc);
+
+        gbc.gridx = 1;
+        namaField = new JTextField(20);
+        namaField.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(namaField, gbc);
+
+        // Jabatan
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel jabatanLabel = new JLabel("Jabatan:");
+        jabatanLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        inputPanel.add(jabatanLabel, gbc);
+
+        gbc.gridx = 1;
+        jabatanField = new JTextField(20);
+        jabatanField.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(jabatanField, gbc);
+
+        mainPanel.add(inputPanel, BorderLayout.NORTH);
+
+        // Table untuk menampilkan data anggota
+        tableModel = new DefaultTableModel(new String[]{"ID", "Nama", "Jabatan"}, 0);
+        table = new JTable(tableModel);
+        table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.setRowHeight(25);
+        JScrollPane scrollPane = new JScrollPane(table);
+        mainPanel.add(scrollPane, BorderLayout.CENTER);
 
         // Panel untuk tombol aksi
-        JPanel buttonPanel = new JPanel();
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         JButton addButton = new JButton("Tambah");
+        addButton.setFont(new Font("Arial", Font.PLAIN, 18));
+        addButton.setPreferredSize(new Dimension(150, 40));
         JButton updateButton = new JButton("Edit");
+        updateButton.setFont(new Font("Arial", Font.PLAIN, 18));
+        updateButton.setPreferredSize(new Dimension(150, 40));
         JButton deleteButton = new JButton("Hapus");
+        deleteButton.setFont(new Font("Arial", Font.PLAIN, 18));
+        deleteButton.setPreferredSize(new Dimension(150, 40));
         JButton backButton = new JButton("Kembali");
+        backButton.setFont(new Font("Arial", Font.PLAIN, 18));
+        backButton.setPreferredSize(new Dimension(150, 40));
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
         buttonPanel.add(backButton);
 
-        // Table untuk menampilkan data anggota
-        tableModel = new DefaultTableModel(new String[]{"ID", "Nama", "Jabatan"}, 0);
-        table = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        // Tambahkan panel ke frame
-        add(inputPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-        add(buttonPanel, BorderLayout.SOUTH);
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         // Load data anggota
         loadData();

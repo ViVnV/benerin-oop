@@ -34,35 +34,42 @@ public class MenuKeuangan extends JFrame implements BasicForm {
         keuanganService = new KeuanganService();
 
         setTitle("Menu Keuangan - CRUD Aktivitas Keuangan");
-        setSize(1000, 650);
+        setSize(950, 700); // Adjusted window size
         setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         setLocationRelativeTo(null);
 
         // Panel utama
         JPanel mainPanel = new JPanel(new BorderLayout());
-        mainPanel.setBorder(new EmptyBorder(10, 10, 10, 10));
+        mainPanel.setBorder(new EmptyBorder(20, 20, 20, 20));
         add(mainPanel);
 
         // Panel input
         JPanel inputPanel = new JPanel(new GridBagLayout());
         inputPanel.setBorder(BorderFactory.createTitledBorder("Form Input Transaksi"));
         GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.insets = new Insets(10, 10, 10, 10);
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Sumber Dana
         gbc.gridx = 0;
         gbc.gridy = 0;
-        inputPanel.add(new JLabel("Sumber Dana:"), gbc);
+        JLabel sumberDanaLabel = new JLabel("Sumber Dana:");
+        sumberDanaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(sumberDanaLabel, gbc);
+
         gbc.gridx = 1;
         sumberDanaComboBox = new JComboBox<>(new String[]{"anggota", "eksternal"});
+        sumberDanaComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
         sumberDanaComboBox.addActionListener(e -> toggleComboBox());
         inputPanel.add(sumberDanaComboBox, gbc);
 
         // Nama Sumber Dana
         gbc.gridx = 0;
         gbc.gridy = 1;
-        inputPanel.add(new JLabel("Nama Sumber Dana:"), gbc);
+        JLabel namaSumberDanaLabel = new JLabel("Nama Sumber Dana:");
+        namaSumberDanaLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(namaSumberDanaLabel, gbc);
+
         gbc.gridx = 1;
         anggotaComboBox = new JComboBox<>();
         eksternalComboBox = new JComboBox<>();
@@ -75,33 +82,49 @@ public class MenuKeuangan extends JFrame implements BasicForm {
         // Keterangan
         gbc.gridx = 0;
         gbc.gridy = 2;
-        inputPanel.add(new JLabel("Keterangan:"), gbc);
+        JLabel keteranganLabel = new JLabel("Keterangan:");
+        keteranganLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(keteranganLabel, gbc);
+
         gbc.gridx = 1;
-        keteranganField = new JTextField();
+        keteranganField = new JTextField(20);
+        keteranganField.setFont(new Font("Arial", Font.PLAIN, 14));
         inputPanel.add(keteranganField, gbc);
 
         // Jumlah
         gbc.gridx = 0;
         gbc.gridy = 3;
-        inputPanel.add(new JLabel("Jumlah:"), gbc);
+        JLabel jumlahLabel = new JLabel("Jumlah:");
+        jumlahLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(jumlahLabel, gbc);
+
         gbc.gridx = 1;
-        jumlahField = new JTextField();
+        jumlahField = new JTextField(20);
+        jumlahField.setFont(new Font("Arial", Font.PLAIN, 14));
         inputPanel.add(jumlahField, gbc);
 
         // Jenis Transaksi
         gbc.gridx = 0;
         gbc.gridy = 4;
-        inputPanel.add(new JLabel("Jenis Transaksi:"), gbc);
+        JLabel jenisTransaksiLabel = new JLabel("Jenis Transaksi:");
+        jenisTransaksiLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(jenisTransaksiLabel, gbc);
+
         gbc.gridx = 1;
         jenisTransaksiComboBox = new JComboBox<>(new String[]{"pemasukan", "pengeluaran"});
+        jenisTransaksiComboBox.setFont(new Font("Arial", Font.PLAIN, 14));
         inputPanel.add(jenisTransaksiComboBox, gbc);
 
         // Tanggal
         gbc.gridx = 0;
         gbc.gridy = 5;
-        inputPanel.add(new JLabel("Tanggal (YYYY-MM-DD):"), gbc);
+        JLabel tanggalLabel = new JLabel("Tanggal (YYYY-MM-DD):");
+        tanggalLabel.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(tanggalLabel, gbc);
+
         gbc.gridx = 1;
-        tanggalField = new JTextField();
+        tanggalField = new JTextField(20);
+        tanggalField.setFont(new Font("Arial", Font.PLAIN, 14));
         inputPanel.add(tanggalField, gbc);
 
         mainPanel.add(inputPanel, BorderLayout.NORTH);
@@ -109,8 +132,8 @@ public class MenuKeuangan extends JFrame implements BasicForm {
         // Panel tabel
         tableModel = new DefaultTableModel(new String[]{"ID", "Sumber Dana", "Nama", "Keterangan", "Jumlah", "Jenis", "Tanggal"}, 0);
         table = new JTable(tableModel);
-        table.setRowHeight(25);
         table.setFont(new Font("Arial", Font.PLAIN, 14));
+        table.setRowHeight(25);
         table.getTableHeader().setFont(new Font("Arial", Font.BOLD, 14));
         JScrollPane scrollPane = new JScrollPane(table);
 
@@ -119,9 +142,17 @@ public class MenuKeuangan extends JFrame implements BasicForm {
         // Panel tombol
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
         JButton addButton = new JButton("Tambah");
+        addButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        addButton.setPreferredSize(new Dimension(120, 40));
         JButton updateButton = new JButton("Edit");
+        updateButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        updateButton.setPreferredSize(new Dimension(120, 40));
         JButton deleteButton = new JButton("Hapus");
+        deleteButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        deleteButton.setPreferredSize(new Dimension(120, 40));
         JButton backButton = new JButton("Kembali");
+        backButton.setFont(new Font("Arial", Font.PLAIN, 16));
+        backButton.setPreferredSize(new Dimension(120, 40));
 
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
@@ -214,19 +245,45 @@ public class MenuKeuangan extends JFrame implements BasicForm {
     public void add() {
         String sumberDana = (String) sumberDanaComboBox.getSelectedItem();
         String selectedNama = sumberDana.equals("anggota") ? (String) anggotaComboBox.getSelectedItem() : (String) eksternalComboBox.getSelectedItem();
-        int id = Integer.parseInt(selectedNama.split(" - ")[0]);
+
+        // Validasi: Cek apakah sumber dana dipilih dan nama dipilih
+        if (sumberDana == null || selectedNama == null || selectedNama.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pilih sumber dana dan nama sumber dana yang valid!");
+            return;
+        }
+
+        int id;
+        try {
+            id = Integer.parseInt(selectedNama.split(" - ")[0]);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Format nama sumber dana tidak valid!");
+            return;
+        }
 
         String keterangan = keteranganField.getText();
-        double jumlah = Double.parseDouble(jumlahField.getText());
+        String jumlahText = jumlahField.getText();
         String jenisTransaksi = (String) jenisTransaksiComboBox.getSelectedItem();
         String tanggal = tanggalField.getText();
+
+        // Validasi: Cek apakah field keterangan, jumlah, jenis transaksi, dan tanggal terisi
+        if (keterangan.isEmpty() || jumlahText.isEmpty() || jenisTransaksi == null || tanggal.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
+            return;
+        }
+
+        double jumlah;
+        try {
+            jumlah = Double.parseDouble(jumlahText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka!");
+            return;
+        }
 
         int anggotaId = sumberDana.equals("anggota") ? id : 0;
         int eksternalId = sumberDana.equals("eksternal") ? id : 0;
 
         try {
             keuanganService.add(new Keuangan(sumberDana, keterangan, jumlah, jenisTransaksi, tanggal, anggotaId, eksternalId));
-
             JOptionPane.showMessageDialog(this, "Transaksi berhasil ditambahkan!");
             loadData();
             clearFields();
@@ -236,23 +293,54 @@ public class MenuKeuangan extends JFrame implements BasicForm {
         }
     }
 
+
     @Override
     public void update() {
         int selectedRow = table.getSelectedRow();
+
+        // Validasi: Cek apakah ada baris yang dipilih
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Pilih transaksi yang ingin diperbarui!");
             return;
         }
 
+        // Ambil nilai ID dari baris yang dipilih
         int keuanganId = (int) tableModel.getValueAt(selectedRow, 0);
         String sumberDana = (String) sumberDanaComboBox.getSelectedItem();
         String selectedNama = sumberDana.equals("anggota") ? (String) anggotaComboBox.getSelectedItem() : (String) eksternalComboBox.getSelectedItem();
-        int id = Integer.parseInt(selectedNama.split(" - ")[0]);
+
+        // Validasi: Cek apakah sumber dana dipilih dan nama dipilih
+        if (selectedNama == null || selectedNama.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Pilih sumber dana yang valid!");
+            return;
+        }
+
+        int id;
+        try {
+            id = Integer.parseInt(selectedNama.split(" - ")[0]);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Format nama sumber dana tidak valid!");
+            return;
+        }
 
         String keterangan = keteranganField.getText();
-        double jumlah = Double.parseDouble(jumlahField.getText());
+        String jumlahText = jumlahField.getText();
         String jenisTransaksi = (String) jenisTransaksiComboBox.getSelectedItem();
         String tanggal = tanggalField.getText();
+
+        // Validasi: Cek apakah field keterangan, jumlah, jenis transaksi, dan tanggal terisi
+        if (keterangan.isEmpty() || jumlahText.isEmpty() || jenisTransaksi == null || tanggal.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Semua field harus diisi!");
+            return;
+        }
+
+        double jumlah;
+        try {
+            jumlah = Double.parseDouble(jumlahText);
+        } catch (NumberFormatException e) {
+            JOptionPane.showMessageDialog(this, "Jumlah harus berupa angka!");
+            return;
+        }
 
         int anggotaId = sumberDana.equals("anggota") ? id : 0;
         int eksternalId = sumberDana.equals("eksternal") ? id : 0;
@@ -268,6 +356,7 @@ public class MenuKeuangan extends JFrame implements BasicForm {
             JOptionPane.showMessageDialog(this, "Error updating transaction!");
         }
     }
+
 
     // Method untuk menghapus transaksi yang dipilih
     @Override

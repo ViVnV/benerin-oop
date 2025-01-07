@@ -15,37 +15,75 @@ public class LoginForm extends JFrame {
     private final JPasswordField passwordField;
 
     public LoginForm() {
-        setTitle("Login Form");
-        setSize(350, 200);
+        setTitle("Sistem Keuangan Benerin.id - Login");
+        setSize(950, 500); // Adjusted window size to fit logo and input fields
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
 
+        // Create main panel with padding
+        JPanel mainPanel = new JPanel(new BorderLayout());
+        mainPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
+        add(mainPanel);
+
+        // Create logo panel
+        JPanel logoPanel = new JPanel();
+        logoPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        JLabel logoLabel = new JLabel(new ImageIcon(getClass().getResource("/com/benerin/assets/logo-benerin.png"))); // Use PNG logo
+        logoPanel.add(logoLabel);
+        mainPanel.add(logoPanel, BorderLayout.NORTH);
+
         // Panel for input fields
-        JPanel panel = new JPanel(new GridLayout(3, 2));
-        add(panel, BorderLayout.CENTER);
+        JPanel inputPanel = new JPanel(new GridBagLayout());
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(15, 15, 15, 15);
+        gbc.fill = GridBagConstraints.HORIZONTAL;
 
         // Username
-        panel.add(new JLabel("Username:"));
-        usernameField = new JTextField();
-        panel.add(usernameField);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        JLabel usernameLabel = new JLabel("Username:");
+        usernameLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        inputPanel.add(usernameLabel, gbc);
+
+        gbc.gridx = 1;
+        usernameField = new JTextField(20);
+        usernameField.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(usernameField, gbc);
 
         // Password
-        panel.add(new JLabel("Password:"));
-        passwordField = new JPasswordField();
-        panel.add(passwordField);
+        gbc.gridx = 0;
+        gbc.gridy = 1;
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(new Font("Arial", Font.PLAIN, 18));
+        inputPanel.add(passwordLabel, gbc);
 
-        // Buttons
+        gbc.gridx = 1;
+        passwordField = new JPasswordField(20);
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 16));
+        inputPanel.add(passwordField, gbc);
+
+        mainPanel.add(inputPanel, BorderLayout.CENTER);
+
+        // Panel for buttons
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 15, 10));
         JButton loginButton = new JButton("Login");
-        JButton cancelButton = new JButton("Cancel");
+        loginButton.setFont(new Font("Arial", Font.PLAIN, 18));
+        loginButton.setPreferredSize(new Dimension(120, 40));
 
-        panel.add(loginButton);
-        panel.add(cancelButton);
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.setFont(new Font("Arial", Font.PLAIN, 18));
+        cancelButton.setPreferredSize(new Dimension(120, 40));
+
+        buttonPanel.add(loginButton);
+        buttonPanel.add(cancelButton);
+
+        mainPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         // Button actions
         loginButton.addActionListener(e -> authenticateUser());
         cancelButton.addActionListener(e -> System.exit(0));
 
-        // Key listener untuk tombol Enter
+        // Key listener for Enter key
         passwordField.addKeyListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -73,8 +111,8 @@ public class LoginForm extends JFrame {
             if (resultSet.next()) {
                 String role = resultSet.getString("role");
                 JOptionPane.showMessageDialog(this, "Login Successful!");
-                dispose();  // Close the login form
-                new MainMenu(username, role);  // Pass username and role to MainMenu
+                dispose();
+                new MainMenu(username, role);
             } else {
                 JOptionPane.showMessageDialog(this, "Invalid username or password.");
             }
