@@ -166,6 +166,13 @@ public class MenuBendahara extends JFrame implements BasicForm {
             clearFields();
         } catch (Exception e) {
             e.printStackTrace();
+
+            // if username already exists
+            if (e.getMessage().contains("Duplicate entry")) {
+                JOptionPane.showMessageDialog(this, "Username sudah digunakan!");
+                return;
+            }
+
             JOptionPane.showMessageDialog(this, "Error adding user!");
         }
     }
